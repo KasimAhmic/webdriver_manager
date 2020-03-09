@@ -1,11 +1,14 @@
-from webdriver_manager.driver_cache import DriverCache
-from webdriver_manager.utils import download_driver
+from abc import abstractmethod
+
+from webdriver_manager.utils.driver_cache import DriverCache
+from webdriver_manager.utils.utils import download_driver
 
 
 class DriverManager(object):
     def __init__(self, root_dir=None):
         self.driver_cache = DriverCache(root_dir)
 
+    @abstractmethod
     def install(self):
         raise NotImplementedError("Please Implement this method")
 

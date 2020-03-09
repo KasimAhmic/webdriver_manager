@@ -1,10 +1,11 @@
 import os
+from abc import abstractmethod
 import re
 from xml.etree import ElementTree
 
 import requests
 
-from webdriver_manager.utils import validate_response, console, chrome_version
+from webdriver_manager.utils.utils import validate_response, console, chrome_version
 
 
 class Driver(object):
@@ -26,6 +27,12 @@ class Driver(object):
         return self._os_type
 
     def get_url(self, version):
+        """
+
+        :param version:
+        :return: url
+        :rtype: str
+        """
         url = "{url}/{ver}/{name}_{os}.zip"
         return url.format(url=self._url,
                           ver=version,
@@ -33,8 +40,14 @@ class Driver(object):
                           os=self.get_os_type())
 
     def get_version(self):
+        """
+
+        :return: version
+        :rtype: str
+        """
         return self._version
 
+    @abstractmethod
     def get_latest_release_version(self):
         # type: () -> str
         raise NotImplementedError("Please implement this method")
@@ -126,8 +139,8 @@ class IEDriver(Driver):
                                        url=url,
                                        latest_release_url=latest_release_url,
                                        name=name)
-
-    def sortchildrenby(self, container):
+    @staticmethod
+    def sort_children_by(container):
         data = []
         for elem in container.iter("Contents"):
             key = elem
@@ -196,7 +209,7 @@ class OperaDriver(Driver):
         return resp.json()["tag_name"]
 
     def get_url(self, version):
-        # type: () -> str
+        # type: (str) -> str
         # https://github.com/operasoftware/operachromiumdriver/releases/download/v.2.45/operadriver_linux64.zip
         console(
             "Getting latest opera release info for {0}".format(
@@ -220,9 +233,26 @@ class OperaDriver(Driver):
         return url
 
     def tagged_release_url(self, version):
-        # type: () -> str
+        # type: (str) -> str
         token = self._os_token
         url = self.opera_release_tag.format(version)
         if token:
             return url + "?access_token={0}".format(token)
         return url
+
+
+class EdgeChromiumDriver(Driver):
+    def __init__(self, name,
+                 version,
+                 os_type,
+                 url,
+                 latest_release_url,
+                 latest_version):
+        super(EdgeChromiumDriver, self).__init__(name, version, os_type, url,
+                                                 latest_release_url)
+
+        self._latest_version = latest_version
+
+    def get_latest_release_version(self):
+        # type: () -> str
+        return self._latest_version
