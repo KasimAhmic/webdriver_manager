@@ -2,7 +2,7 @@ import os
 import pytest
 from selenium import webdriver
 
-from webdriver_manager.drivers.chrome import ChromeDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def test_chrome_manager_with_specific_version():

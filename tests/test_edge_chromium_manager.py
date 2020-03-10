@@ -5,7 +5,7 @@ import shutil
 import pytest
 import selenium as se
 from selenium import webdriver
-from webdriver_manager.drivers.microsoft import EdgeChromiumDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from webdriver_manager.utils import os_type as get_os_type
 
 PATH = '.'
